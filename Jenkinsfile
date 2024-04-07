@@ -2,25 +2,14 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage("build & sonarqube") {
+            agent any
             steps {
-                echo 'Build App'
+              withSonarQubeEnv(credentialsId: 'Sonar_Token') {
+                sh 'mvn clean package sonar:sonar'
+              }
             }
-        }
-        stage('Test') {
-            steps {
-                echo 'Test App'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploy App'
-            }
-        }
+          }
     }
-    post {
-        always {
-            emailext body: 'summary', subject: 'pipeline status', to: 'modisakshi54@gmail.com'
-        }
-    }
+    
 }
